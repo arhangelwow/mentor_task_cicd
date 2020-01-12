@@ -22,9 +22,9 @@ def mvnHome = tool 'Maven_3.6.3'  //global variable for maven installations in j
       
     stage('Start Petclinic Website') {//stage 4
             withEnv(["PATH+MAVEN=${mvnHome}/bin", "JENKINS_NODE_COOKIE=do_not_kill", "BUILD_ID=do_not_kill"]) {//withEnv
-                sh '''cd /var/lib/jenkins/workspace/spring_petclinic_pipeline/
+                sh '''cd /home/centos/workspace/spring_petclinic_pipeline/
                 mvn clean install
-                cd /var/lib/jenkins/workspace/spring_petclinic_pipeline/target
+                cd /home/centos/workspace/spring_petclinic_pipeline/target/
                 nohup java -jar spring-petclinic-2.2.0.BUILD-SNAPSHOT.jar &'''
             }//withEnv
     }//stage 4
