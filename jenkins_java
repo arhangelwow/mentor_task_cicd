@@ -1,0 +1,60 @@
+#!groovy
+properties(
+    [
+        buildDiscarder(
+            logRotator(
+                daysToKeepStr: '10',
+                numToKeepStr: '10'
+            )
+        )
+    ]
+)
+node('Slave1') {
+   def mvnHome
+   def sonarHome
+   stage('GIT') {
+     git branch: 'task11', credentialsId: 'd2ba5002-7825-****-****-f0b014092370', url: 'git@git.epam.com:Alona_Hryhorieva/Pre_Prod_Java_q3q4_2019.git'
+      tool name: 'Maven 3.5.0', type: 'maven'
+      mvnHome = tool 'Maven 3.5.0'
+      tool name: 'SonarQube 4.2.0.1873', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+      sonarHome = tool 'SonarQube 4.2.0.1873'
+   }
+   stage('Build') {
+      withEnv(["MVN_HOME=$mvnHome"]) {
+        sh ' cd /home/jenkins/workspace/dev_alona_hryhorieva_task11/web_shop ;"$MVN_HOME/bin/mvn" clean package'
+      }
+   }
+   stage('SonarQube Analysis') {
+       withSonarQubeEnv('Sonar 6.0'){
+          sh 'cd /home/jenkins/workspace/dev_alona_hryhorieva_task11/web_shop;"/home/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.5.0/bin/mvn" sonar:sonar'
+      }
+   }
+   /*
+   stage("Quality Gate"){
+          timeout(time: 1, unit: 'HOURS') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  echo "Pipeline aborted due to quality gate failure: ${qg.status}"
+              }
+          }
+      }
+     */ 
+   stage ('Artifactory') { 
+    def server = Artifactory.server 'Art 5.2.1'
+    def uploadSpec = 
+    """
+    {
+    "files": [
+        {
+            "pattern": "**/target/*.war",
+            "target": "libs-release-local/com/epam/dev_alona_hryhorieva_task11/",
+            "props": "type=war;status=ready"
+        }
+      ]
+    }
+    """
+    buildInfo=server.upload(uploadSpec) 
+    server.publishBuildInfo(buildInfo) 
+    }
+    
+}
