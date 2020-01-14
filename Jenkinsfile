@@ -52,9 +52,8 @@ def mvnHome = tool 'MavenPet_3.6.3'  //global variable for maven installations i
             buildName '${JOB_NAME}_${BUILD_NUMBER}'
         }//withEnv
     }//stage 5
-    
-    stage('Start Petclinic Website, Deploy Stage') {
-        withCredentials([usernamePassword(credentialsId: 'art', passwordVariable: 'artifactory_pass', usernameVariable: 'artifactory_login')]) {//stage 6
+
+    stage('Start Petclinic Website, Deploy Stage') {//stage 6
             withEnv(["PATH+MAVEN=${mvnHome}/bin", "JENKINS_NODE_COOKIE=do_not_kill", "BUILD_ID=do_not_kill"]) {//withEnv
                     def server = Artifactory.server 'Art'
                     def downloadSpec = 
@@ -73,9 +72,8 @@ def mvnHome = tool 'MavenPet_3.6.3'  //global variable for maven installations i
                 sh '''cd ${WORKSPACE}/
                 mvn clean install
                 cd ${WORKSPACE}/builds/
-                nohup java -jar ${IMAGE}_${VERSION}_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar &'''
+                nohup java -jar spring-petclinic_2.2.0.BUILD-SNAPSHOT_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar &'''
             }//withEnv
-        }//withCredentials
     }//stage 6
     
    } //timestamps  
