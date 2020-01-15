@@ -17,7 +17,7 @@ node('Slave1Centos'){
                     "target": "${WORKSPACE}/builds/",
                     "props": "type=jar;status=ready"
                     }
-                ]
+                  ]
                 }
                 """
                 buildInfo=server.download(downloadSpec)    
