@@ -69,7 +69,7 @@ def mvnHome = tool 'MavenPet_3.6.3'  //global variable for maven installations i
                     buildInfo=server.download(downloadSpec) 
                     
                 sh """cd ${WORKSPACE}/
-                mvn clean install test
+                mvn clean install
                 cd ${WORKSPACE}/builds/
                 nohup java -jar ${IMAGE}_${VERSION}_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar &"""
             }//withEnv
