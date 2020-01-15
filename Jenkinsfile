@@ -23,7 +23,7 @@ node('Slave1Centos'){
     stage('SonarQube Analysis') {
         withSonarQubeEnv('sonar') {
             withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                sh '''${WORKSPACE}/
+                sh '''cd ${WORKSPACE}/
                       mvn sonar:sonar'''
             }
         }
