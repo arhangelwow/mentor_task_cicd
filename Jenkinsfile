@@ -1,7 +1,7 @@
 #!groovy
 
 node ('Slave1Centos') {
-    
+
 def IMAGE = readMavenPom().getArtifactId()
 def VERSION = readMavenPom().getVersion()
 def server = Artifactory.server 'Art'
@@ -28,7 +28,7 @@ buildName '${JOB_NAME}_${BUILD_NUMBER}'
         stage('SonarQube Analysis') {
             withSonarQubeEnv('sonar') {
                 withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
-                    sh """${WORKSPACE}; 
+                    sh """${WORKSPACE}/
                         mvn sonar:sonar"""
                 }
             }
@@ -45,7 +45,7 @@ buildName '${JOB_NAME}_${BUILD_NUMBER}'
                     "target": "libs-release-local/${IMAGE}_${VERSION}_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar",
                     "props": "type=jar;status=ready"
                     }
-                ]
+                 ]
                 }
                 """
                 buildInfo=server.upload(uploadSpec) 
@@ -64,8 +64,8 @@ buildName '${JOB_NAME}_${BUILD_NUMBER}'
                     "pattern": "libs-release-local/*_${BUILD_NUMBER}.jar",
                     "target": "${WORKSPACE}/builds/",
                     "props": "type=jar;status=ready"
-                }
-                ]
+                    }
+                 ]
                 }
                 """
                 buildInfo=server.download(downloadSpec) 
