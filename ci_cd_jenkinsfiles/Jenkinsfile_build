@@ -47,26 +47,5 @@ node('Slave1Centos'){
                 server.publishBuildInfo(buildInfo)  
             }
         }//stage 5
-        stage('Start Petclinic Website, Deploy Stage') {
-            withEnv(["PATH+MAVEN=${mvnHome}/bin", "JENKINS_NODE_COOKIE=do_not_kill", "BUILD_ID=do_not_kill"]) {
-                def downloadSpec = 
-                """
-                {
-                "files": [
-                    {
-                    "pattern": "libs-release-local/*_${BUILD_NUMBER}.jar",
-                    "target": "${WORKSPACE}/builds/",
-                    "props": "type=jar;status=ready"
-                    }
-                ]
-                }
-                """
-                buildInfo=server.download(downloadSpec)    
-                sh """cd ${WORKSPACE}/
-                mvn clean install
-                cd ${WORKSPACE}/builds/
-                nohup java -jar ${IMAGE}_${VERSION}_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar &"""
-            }
-        }//stage 6
     }
 }
