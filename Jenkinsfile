@@ -32,7 +32,7 @@ buildName '${JOB_NAME}_${BUILD_NUMBER}'
                         mvn sonar:sonar"""
                 }
             }
-    }//stage 4
+        }//stage 4
 
         stage ('Artifactory') {
             withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
