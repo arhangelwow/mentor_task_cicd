@@ -67,6 +67,6 @@ node('Slave1Centos'){
                 cd ${WORKSPACE}/builds/
                 nohup java -jar ${IMAGE}_${VERSION}_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar &"""
             }
-        }
+        }//stage 6
     }
 }
