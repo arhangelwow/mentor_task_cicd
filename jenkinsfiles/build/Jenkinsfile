@@ -1,8 +1,6 @@
 #!groovy
 
 node('Slave1Centos'){
-    def IMAGE = readMavenPom().getArtifactId()
-    def VERSION = readMavenPom().getVersion()
     def server = Artifactory.server 'Art'
     def mvnHome = tool 'MavenPet_3.6.3'  //global variable for maven installations in jenkins
     buildName '${JOB_NAME}_${BUILD_NUMBER}'
@@ -31,6 +29,8 @@ node('Slave1Centos'){
         }//stage 4 
         stage ('Artifactory') {
             withEnv(["PATH+MAVEN=${mvnHome}/bin"]) {
+                def IMAGE = readMavenPom().getArtifactId()
+                def VERSION = readMavenPom().getVersion()
                 def uploadSpec = 
                 """
                 {
@@ -40,7 +40,7 @@ node('Slave1Centos'){
                     "target": "libs-release-local/${IMAGE}_${VERSION}_${BUILD_TIMESTAMP}_${BUILD_NUMBER}.jar",
                     "props": "type=jar;status=ready"
                     }
-                ]
+                  ]
                 }
                 """
                 buildInfo=server.upload(uploadSpec) 
