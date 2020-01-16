@@ -33,6 +33,7 @@ node('Slave1Centos'){
             timeout(time: 1, unit: 'HOURS') {
                 def qg = waitForQualityGate()
                 if (qg.status != 'OK') {
+                    currentBuild.result = 'FAILURE'
                     echo "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
             }
